@@ -179,11 +179,11 @@ function HeroSection({ onCTAClick }: HeroSectionProps) {
 
           <Button 
             size="lg" 
-            className="px-6 md:px-12 py-5 md:py-6 rounded-md bg-primary hover:bg-primary/90 font-black text-sm md:text-base animate-gentle-zoom w-full max-w-md"
+            className="px-4 md:px-12 py-4 md:py-6 rounded-md bg-primary hover:bg-primary/90 font-black text-xs md:text-base animate-gentle-zoom w-full max-w-md break-words whitespace-normal"
             onClick={onCTAClick}
             data-testid="button-hero-cta"
           >
-            🔥 Desbloquear Energia Agora! 🔥
+            🔥 Desbloquear Energia 🔥
           </Button>
 
           <div className="flex flex-wrap items-center justify-center gap-3 text-xs">
