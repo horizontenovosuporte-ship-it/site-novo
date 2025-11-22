@@ -172,7 +172,7 @@ function HeroSection({ onCTAClick }: HeroSectionProps) {
           <div className="space-y-1">
             <div className="flex items-center justify-center gap-2">
               <span className="text-2xl line-through text-muted-foreground">R$ 67,00</span>
-              <p className="text-5xl md:text-6xl font-black text-destructive" data-testid="text-hero-price">R$ 27,00</p>
+              <p className="text-5xl md:text-6xl font-black text-destructive" data-testid="text-hero-price">R$ 10,00</p>
             </div>
             <p className="text-xs text-destructive font-bold">APENAS HOJE - BLACK FRIDAY</p>
           </div>
@@ -701,7 +701,7 @@ function UpsellModal({ open, onOpenChange, upsellPlan, onAccept, onDecline, isLo
               </div>
 
               <div className="space-y-1">
-                {upsellPlan.features.slice(0, 2).map((feature, idx) => (
+                {upsellPlan.features.map((feature, idx) => (
                   <div key={idx} className="flex items-start gap-1.5">
                     <CheckCircle className="w-3 h-3 text-primary flex-shrink-0 mt-0.5" />
                     <span className="text-xs">{feature}</span>
