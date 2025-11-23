@@ -70,24 +70,38 @@ export default function LandingPage() {
     pricingRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
   };
 
+  const trackCheckout = (value: number) => {
+    if (typeof window !== 'undefined' && (window as any).fbq) {
+      (window as any).fbq('track', 'InitiateCheckout', {
+        value: value,
+        currency: 'BRL'
+      });
+    }
+  };
+
   const handleBasicClick = () => {
+    trackCheckout(10);
     setShowUpsellModal(true);
     setPendingPlan("basic");
   };
 
   const handlePremiumClick = () => {
+    trackCheckout(27);
     window.location.href = "https://go.invictuspay.app.br/pj4djuh1tx";
   };
 
   const handleGuaranteeClick = () => {
+    trackCheckout(27);
     window.location.href = "https://go.invictuspay.app.br/pj4djuh1tx";
   };
 
   const handleUpsellAccept = () => {
+    trackCheckout(17);
     window.location.href = "https://go.invictuspay.app.br/ej7qk";
   };
 
   const handleUpsellDecline = () => {
+    trackCheckout(10);
     window.location.href = "https://go.invictuspay.app.br/3cmyovl7my";
   };
 
