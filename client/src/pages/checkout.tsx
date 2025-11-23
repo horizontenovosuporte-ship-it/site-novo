@@ -15,15 +15,6 @@ export default function CheckoutPage() {
     
     if (plan && price) {
       setPlanInfo({ plan, price });
-      
-      // Track InitiateCheckout event when checkout page loads
-      const priceValue = parseFloat(price);
-      if (typeof window !== 'undefined' && (window as any).fbq) {
-        (window as any).fbq('track', 'InitiateCheckout', {
-          value: priceValue,
-          currency: 'BRL'
-        });
-      }
     } else {
       setLocation("/");
     }
