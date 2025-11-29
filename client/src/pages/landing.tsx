@@ -1,1038 +1,535 @@
-import React, { useState, useRef, useEffect } from "react";
-import { useMutation } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { 
-  Accordion, 
-  AccordionContent, 
-  AccordionItem, 
-  AccordionTrigger 
-} from "@/components/ui/accordion";
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogDescription, 
-  DialogFooter, 
-  DialogHeader, 
-  DialogTitle 
-} from "@/components/ui/dialog";
-import { 
-  CheckCircle, 
-  Sparkles, 
-  Shield, 
-  Zap, 
-  Heart, 
-  TrendingUp, 
-  Moon, 
-  Flower2,
-  Star,
-  AlertTriangle,
-  Loader2
-} from "lucide-react";
-import { PLANS, type Plan, type CheckoutData } from "@shared/schema";
+import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useLocation } from "wouter";
+import { Bird, Shield, Sparkles, Heart, Leaf, Flame, Wind, Sun, Moon, Star, Zap, Gift, ChevronDown } from "lucide-react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import heroImage from "@assets/Design_sem_nome_9_1764440988721.png";
+import bonus1Image from "@assets/1_1764443110192.png";
+import bonus2Image from "@assets/2_1764443110193.png";
+import bonus3Image from "@assets/3_1764443110193.png";
+import bonus4Image from "@assets/4_1764443110193.png";
+import client1Image from "@assets/generated_images/brazilian_woman_client_portrait_1.png";
+import client2Image from "@assets/generated_images/brazilian_man_client_portrait_2.png";
+import client3Image from "@assets/generated_images/mature_brazilian_woman_client_portrait.png";
 
 export default function LandingPage() {
-  const [showUpsellModal, setShowUpsellModal] = useState(false);
-  const [pendingPlan, setPendingPlan] = useState<string | null>(null);
-  const pricingRef = useRef<HTMLElement>(null);
   const { toast } = useToast();
-  
-  const basicPlan = PLANS.find(p => p.id === "basic")!;
-  const premiumPlan = PLANS.find(p => p.id === "premium")!;
-  const upsellPlan = PLANS.find(p => p.id === "premium-upsell")!;
+  const [, setLocation] = useLocation();
+  const [countdown, setCountdown] = useState("23:59:59");
+  const [currentDate, setCurrentDate] = useState("");
+  const [visibleSections, setVisibleSections] = useState<{ [key: string]: boolean }>({});
 
-  const checkoutMutation = useMutation({
-    mutationFn: async (data: CheckoutData) => {
-      const response = await apiRequest("POST", "/api/checkout", data);
-      if (!response.ok) {
-        throw new Error("Checkout failed");
-      }
-      return await response.json();
-    },
-    onSuccess: (_data, variables) => {
-      const planPrice = variables.planId === "basic" ? "10" : 
-                       variables.planId === "premium-upsell" ? "17" : "27";
-      window.location.href = `/checkout?plan=${variables.planId}&price=${planPrice}`;
-    },
-    onError: () => {
+  useEffect(() => {
+    const today = new Date();
+    const formatted = today.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    setCurrentDate(formatted);
+
+    const updateCountdown = () => {
+      const now = new Date().getTime();
+      const endOfDay = new Date();
+      endOfDay.setHours(23, 59, 59, 999);
+      const distance = endOfDay.getTime() - now;
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      setCountdown(`${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
+    };
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Scroll reveal with animation
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setVisibleSections((prev) => ({
+              ...prev,
+              [entry.target.id]: true,
+            }));
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    document.querySelectorAll('[data-animate]').forEach((el) => {
+      observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  // Notifications
+  useEffect(() => {
+    const customers = [
+      { name: 'Maria Silva', city: 'São Paulo', state: 'SP' },
+      { name: 'João Santos', city: 'Rio de Janeiro', state: 'RJ' },
+      { name: 'Ana Costa', city: 'Belo Horizonte', state: 'MG' },
+      { name: 'José Oliveira', city: 'Salvador', state: 'BA' },
+      { name: 'Francisca Pereira', city: 'Fortaleza', state: 'CE' },
+      { name: 'Paula Gomes', city: 'Brasília', state: 'DF' },
+      { name: 'Roberto Santos', city: 'Curitiba', state: 'PR' },
+      { name: 'Lucia Ferreira', city: 'Recife', state: 'PE' },
+      { name: 'Carlos Mendes', city: 'Porto Alegre', state: 'RS' },
+      { name: 'Beatriz Alves', city: 'Manaus', state: 'AM' },
+      { name: 'Fernando Teixeira', city: 'Belém', state: 'PA' },
+      { name: 'Cristina Rocha', city: 'Goiânia', state: 'GO' },
+    ];
+    const plans = ['Plano Básico', 'Plano Premium'];
+    
+    const showNotification = () => {
+      const customer = customers[Math.floor(Math.random() * customers.length)];
+      
       toast({
-        variant: "destructive",
-        title: "Erro ao processar checkout",
-        description: "Por favor, tente novamente.",
+        title: `${customer.name} adquiriu os 50 Banhos de Descarrego!`,
+        duration: 3500,
       });
+      setTimeout(showNotification, Math.random() * 25000 + 18000);
+    };
+
+    setTimeout(showNotification, 8000);
+  }, [toast]);
+
+  // Scroll to section function
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
-  });
-
-  const scrollToPricing = () => {
-    pricingRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
   };
 
-  const trackAndRedirect = (price: number, url: string) => {
-    if (typeof window !== 'undefined' && (window as any).fbq) {
-      (window as any).fbq('track', 'InitiateCheckout', {
-        value: price,
-        currency: 'BRL'
-      });
+  // Handle checkout click - save position
+  const handleCheckout = (plan: string) => {
+    localStorage.setItem('scrollPosition', window.scrollY.toString());
+    if (plan === 'Plano Básico') {
+      setLocation('/upsell');
+    } else {
+      window.open('https://go.invictuspay.app.br/h74rluqxrx', '_blank');
     }
-    setTimeout(() => {
-      window.location.href = url;
-    }, 100);
   };
 
-  const handleBasicClick = () => {
-    setShowUpsellModal(true);
-    setPendingPlan("basic");
-  };
+  // Restore scroll position on page load with multiple fallbacks
+  useEffect(() => {
+    const restoreScroll = (delay: number = 0) => {
+      setTimeout(() => {
+        const savedPosition = localStorage.getItem('scrollPosition');
+        if (savedPosition && parseInt(savedPosition) > 0) {
+          window.scrollTo({ top: parseInt(savedPosition), behavior: 'auto' });
+          localStorage.removeItem('scrollPosition');
+        }
+      }, delay);
+    };
 
-  const handlePremiumClick = () => {
-    trackAndRedirect(27, "https://go.invictuspay.app.br/pj4djuh1tx");
-  };
+    // Restore immediately
+    restoreScroll(0);
+    
+    // Restore after short delay for DOM readiness
+    restoreScroll(50);
+    
+    // Restore after longer delay for full page load
+    restoreScroll(200);
 
-  const handleGuaranteeClick = () => {
-    trackAndRedirect(27, "https://go.invictuspay.app.br/pj4djuh1tx");
-  };
+    // Also listen for visibility change
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        restoreScroll(0);
+      }
+    };
 
-  const handleUpsellAccept = () => {
-    trackAndRedirect(17, "https://go.invictuspay.app.br/ej7qk");
-  };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    // Listen for page load complete
+    window.addEventListener('load', () => restoreScroll(100));
 
-  const handleUpsellDecline = () => {
-    trackAndRedirect(10, "https://go.invictuspay.app.br/3cmyovl7my");
-  };
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('load', () => restoreScroll(100));
+    };
+  }, []);
 
   return (
-    <div className="min-h-screen bg-background">
-      <TopBanner />
-      <HeroSection onCTAClick={scrollToPricing} />
-      <ProblemSection />
-      <TransformationSection />
-      <BenefitsGrid />
-      <AuthorSection />
-      <PricingSection 
-        ref={pricingRef}
-        basicPlan={basicPlan}
-        premiumPlan={premiumPlan}
-        onBasicClick={handleBasicClick}
-        onPremiumClick={handlePremiumClick}
-        isLoading={checkoutMutation.isPending}
-      />
-      <GuaranteeSection onCTAClick={handleGuaranteeClick} />
-      <TestimonialsSection />
-      <FAQSection />
-      <FinalCTA onBasicClick={handleBasicClick} onPremiumClick={handlePremiumClick} />
-      <Footer />
-
-      <UpsellModal
-        open={showUpsellModal}
-        onOpenChange={setShowUpsellModal}
-        upsellPlan={upsellPlan}
-        onAccept={handleUpsellAccept}
-        onDecline={handleUpsellDecline}
-        isLoading={checkoutMutation.isPending}
-      />
-    </div>
-  );
-}
-
-function TopBanner() {
-  const today = new Date();
-  const formattedDate = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`;
-  
-  return (
-    <div className="bg-destructive text-destructive-foreground py-1 md:py-3 text-center font-semibold animate-gentle-zoom overflow-hidden">
-      <div className="px-1 md:px-2 flex items-center justify-center gap-1 flex-wrap text-xs md:text-sm">
-        <span>🔥</span>
-        <span>BLACK FRIDAY - DESCONTO ESPECIAL APENAS HOJE {formattedDate}</span>
-        <span>🔥</span>
+    <div className="min-h-screen bg-white text-[#333333]" style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(255, 159, 69, 0.03) 0%, transparent 50%)' }}>
+      {/* BANNER URGÊNCIA */}
+      <div className="sticky top-0 z-50 bg-[#FF9F45] text-white py-3 px-4 text-center font-black animate-zoom-boom">
+        <p className="text-sm md:text-base">⏰ OFERTA ACABA HOJE {currentDate}</p>
+        <p className="text-xs md:text-sm mt-1">GARANTA SEU ACESSO AGORA</p>
       </div>
-    </div>
-  );
-}
 
-interface HeroSectionProps {
-  onCTAClick: () => void;
-}
-
-function HeroSection({ onCTAClick }: HeroSectionProps) {
-  return (
-    <section className="py-12 md:py-16 px-4 bg-gradient-to-b from-secondary/10 to-background overflow-x-hidden">
-      <div className="max-w-4xl mx-auto text-center space-y-6">
-        <h1 
-          className="text-4xl md:text-5xl lg:text-6xl font-black leading-tight text-center"
-          data-testid="text-hero-headline"
-        >
-          SUAS ENERGIAS ESTÃO<br />
-          <span className="text-primary">BLOQUEADAS E PESADAS?</span><br />
-          DESBLOQUEIE AGORA!
-        </h1>
-
-        <p className="text-base md:text-lg text-foreground max-w-2xl mx-auto leading-relaxed">
-          Você vai descobrir os <span className="text-primary font-semibold">poderosos segredos</span> que <span className="text-primary font-semibold">desbloquearam a energia</span> de centenas de pessoas, atraindo <span className="text-primary font-semibold">prosperidade, proteção</span> e realizações através de <span className="text-primary font-semibold">banhos prontos e fáceis de aplicar</span>.
-        </p>
-
-        <img 
-          src="https://i.ibb.co/8n12Dqny/9-F24546-C-4-B6-F-4-F9-A-B1-BB-562-A6470629-F.png"
-          alt="Transformação energética"
-          className="w-full max-w-xs mx-auto rounded-lg shadow-lg"
-          data-testid="img-hero-transform"
-        />
-
-        <div className="flex flex-col items-center gap-4">
-          <div className="space-y-1">
-            <div className="flex items-center justify-center gap-2">
-              <span className="text-2xl line-through text-muted-foreground">R$ 67,00</span>
-              <p className="text-5xl md:text-6xl font-black text-destructive" data-testid="text-hero-price">R$ 10,00</p>
-            </div>
-            <p className="text-xs text-destructive font-bold">APENAS HOJE - BLACK FRIDAY</p>
+      {/* HERO */}
+      <section className="relative pt-8 pb-12 px-4 bg-white">
+        <div className="max-w-2xl mx-auto space-y-6">
+          
+          {/* IMAGEM */}
+          <div data-animate id="hero-image" className={`transition-all duration-1000 ${visibleSections['hero-image'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
+            <img src={heroImage} alt="50 Banhos" className="w-full h-auto rounded-2xl shadow-lg hover:shadow-xl transition-all animate-float-up" />
           </div>
 
-          <Button 
-            size="lg" 
-            className="px-4 md:px-12 py-4 md:py-6 rounded-md bg-primary hover:bg-primary/90 font-black text-xs md:text-base animate-gentle-zoom w-full max-w-md break-words whitespace-normal"
-            onClick={onCTAClick}
+          {/* TÍTULO PRINCIPAL */}
+          <div data-animate id="hero-text" className={`text-center transition-all duration-1000 ${visibleSections['hero-text'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
+            <h1 className="text-5xl md:text-6xl font-black text-[#FF9F45] mb-3">
+              50 Banhos de Descarrego Pesado
+            </h1>
+            <p className="text-lg md:text-xl font-bold text-[#333333]">
+              Liberte-se de energias negativas em 7 dias
+            </p>
+          </div>
+
+          {/* COPY AGRESSIVA - 3 PONTOS */}
+          <div className="space-y-4">
+            <div className="text-center">
+              <p className="text-base md:text-lg font-black text-[#FF9F45] mb-2">
+                Cansado de carregar mau-olhado, inveja e bloqueios?
+              </p>
+              <p className="text-sm md:text-base font-semibold text-[#666]">
+                Você merece estar leve, protegido e vibrando alto.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 gap-3">
+              <div className="text-center">
+                <p className="font-black text-[#333333]">✨ Limpeza espiritual profunda</p>
+              </div>
+              <div className="text-center">
+                <p className="font-black text-[#333333]">🛡️ Proteção energética completa</p>
+              </div>
+              <div className="text-center">
+                <p className="font-black text-[#333333]">⚡ Elevação de vibração</p>
+              </div>
+            </div>
+          </div>
+
+          {/* CTA */}
+          <button
+            onClick={() => scrollToSection('button-plan-premium')}
+            className="w-full py-6 md:py-7 bg-gradient-to-r from-[#FF9F45] to-yellow-400 text-white font-black text-lg md:text-xl rounded-full shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
             data-testid="button-hero-cta"
           >
-            🔥 Desbloquear Energia 🔥
-          </Button>
+            LIBERTA-SE AGORA
+          </button>
 
-          <div className="flex flex-wrap items-center justify-center gap-3 text-xs">
-            <div className="flex items-center gap-1">
-              <CheckCircle className="w-4 h-4 text-primary" />
-              <span>100% seguro</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <CheckCircle className="w-4 h-4 text-primary" />
-              <span>Entrega imediata</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <CheckCircle className="w-4 h-4 text-primary" />
-              <span>Garantia 7 dias</span>
-            </div>
-          </div>
-
-          <p className="text-xs text-muted-foreground italic">
-            ⚠️ Oferta Black Friday por tempo limitado - pode expirar a qualquer momento
-          </p>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function ProblemSection() {
-  return (
-    <section className="py-16 px-4 bg-card/30 overflow-x-hidden">
-      <div className="max-w-4xl mx-auto space-y-8">
-        <h2 className="text-3xl md:text-4xl font-bold text-center">
-          VOCÊ SENTE QUE SUA<br />
-          <span className="text-primary">ENERGIA ESTÁ BLOQUEADA?</span>
-        </h2>
-
-        <p className="text-center text-destructive font-semibold">
-          Não está sozinho(a) nessa luta...
-        </p>
-
-        <div className="grid md:grid-cols-3 gap-6 items-center mb-8">
-          <div className="md:col-span-1">
-            <img 
-              src="https://i.ibb.co/fYGQD52x/BEDE4492-CC15-4760-9-DFB-59-D7193938-BD.png"
-              alt="Bloqueio energético 1"
-              className="w-full rounded-lg shadow-lg"
-            />
-          </div>
-
-          <div className="md:col-span-1">
-            <img 
-              src="https://i.ibb.co/rf21Jksk/342-B953-C-9773-458-A-AA81-F28-C19-C35-E5-C.png"
-              alt="Bloqueio energético 2"
-              className="w-full rounded-lg shadow-lg"
-            />
-          </div>
-
-          <div className="md:col-span-1 space-y-4">
-            <p className="text-lg font-semibold">
-              Por mais que você tente, parece que sua{" "}
-              <span className="text-destructive">saúde está ruim</span>. Você
-              trabalha duro, mas o dinheiro não prospera. Você quer amar, mas
-              seus relacionamentos não funcionam.
-            </p>
-
-            <p className="text-lg">
-              Você parece ser um ímã <span className="font-semibold">atraindo apenas energia
-              pesada, olhares de inveja e mau olhado</span> ao seu redor.
-            </p>
+          {/* GARANTIA E URGÊNCIA */}
+          <div className="text-center space-y-2">
+            <p className="font-bold text-red-600 text-sm">⏱️ Oferta acaba hoje - vagas limitadas</p>
+            <p className="font-bold text-green-700 text-sm">✓ Garantia de 7 dias - devolução 100%</p>
           </div>
         </div>
+      </section>
 
-        <div className="space-y-6">
-          <Card className="bg-secondary/20 p-6 border-2 border-secondary">
-            <p className="text-lg font-semibold">
-              A solução é mais simples do que você imagina:{" "}
-              <span className="text-primary">Você precisa limpar</span>,{" "}
-              <span className="text-primary">purificar</span> e{" "}
-              <span className="text-primary">atrair</span> as energias
-              corretas através de <span className="text-primary">banhos energéticos
-              poderosos</span>.
-            </p>
-          </Card>
+      {/* BENEFÍCIOS - VISUAL */}
+      <section className="py-20 px-4 bg-[#FFF5E6]">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-4xl md:text-5xl font-black text-center mb-16 text-[#333333]">O Que Você Vai Receber</h2>
 
-          <Card className="bg-primary/10 p-6 border-2 border-primary">
-            <p className="text-xl font-bold text-center">
-              TALVEZ O QUE ESTÁ TE TRAVANDO NÃO SEJA O EXTERNO...<br />
-              <span className="text-primary text-2xl">É SUA ENERGIA!</span>
-            </p>
-            <p className="text-center mt-4 text-muted-foreground">
-              Você força, usa técnicas e faz cursos para limpar suas
-              energias, e{" "}
-              <span className="text-foreground font-semibold">
-                antes mesmo de perceber, sente-se vazio(a)
-              </span>
-              .
-            </p>
-          </Card>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function TransformationSection() {
-  return (
-    <section className="py-16 px-4 overflow-x-hidden">
-      <div className="max-w-5xl mx-auto space-y-12">
-        <h2 className="text-3xl md:text-4xl font-bold text-center">
-          AGORA IMAGINE SUA<br />
-          <span className="text-primary">VIDA COM ENERGIA LIMPA E DESBLOQUEADA:</span>
-        </h2>
-
-        <div className="flex flex-col md:grid md:grid-cols-3 gap-4 md:gap-6 mb-8 items-center md:items-start">
-          <div className="w-full max-w-sm">
-            <img 
-              src="https://i.ibb.co/SXznkLFB/DD76-E21-A-39-C5-4968-8-B5-F-7-B8-F8305-F1-D8.png"
-              alt="Vida transformada 1"
-              className="w-full h-48 md:h-64 object-cover rounded-lg shadow-lg"
-            />
-          </div>
-
-          <div className="w-full max-w-sm">
-            <img 
-              src="https://i.ibb.co/Y4LhjVXB/627-C0-AB9-5958-47-A3-9969-6930-D57973-E0.png"
-              alt="Vida transformada 2"
-              className="w-full h-48 md:h-64 object-cover rounded-lg shadow-lg"
-            />
-          </div>
-
-          <div className="space-y-3 w-full">
-            <div className="flex items-start gap-2 p-3 bg-card rounded-md border border-primary/30">
-              <CheckCircle className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-              <p className="text-sm">Você acorda <span className="font-semibold">leve, protegido(a)</span></p>
-            </div>
-            <div className="flex items-start gap-2 p-3 bg-card rounded-md border border-primary/30">
-              <CheckCircle className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-              <p className="text-sm">O dinheiro <span className="font-semibold">flui</span></p>
-            </div>
-            <div className="flex items-start gap-2 p-3 bg-card rounded-md border border-primary/30">
-              <CheckCircle className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-              <p className="text-sm">Sente-se <span className="font-semibold">equilibrado</span></p>
-            </div>
-            <div className="flex items-start gap-2 p-3 bg-card rounded-md border border-primary/30">
-              <CheckCircle className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-              <p className="text-sm">Oportunidades <span className="font-semibold">surgem</span></p>
-            </div>
-          </div>
-        </div>
-
-        <Card className="bg-gradient-to-r from-primary/20 to-secondary/20 p-8 border-2 border-primary">
-          <h3 className="text-2xl md:text-3xl font-bold text-center mb-4">
-            120 BANHOS ENERGÉTICOS PRONTOS
-          </h3>
-          <p className="text-center text-lg">
-            Cada banho com{" "}
-            <span className="font-semibold">instruções detalhadas</span>,{" "}
-            ingredientes fáceis de encontrar e{" "}
-            <span className="font-semibold">efeitos comprovados</span> por
-            centenas de praticantes.
-          </p>
-        </Card>
-      </div>
-    </section>
-  );
-}
-
-function BenefitsGrid() {
-  const categories = [
-    {
-      icon: Sparkles,
-      title: "Purificação",
-      color: "from-green-500/20 to-green-600/10",
-      borderColor: "border-green-500/30",
-      items: "Arruda, Guiné, Sal Grosso, 7 Ervas, Descarrego e mais"
-    },
-    {
-      icon: Shield,
-      title: "Proteção",
-      color: "from-blue-500/20 to-blue-600/10",
-      borderColor: "border-blue-500/30",
-      items: "Espada de São Jorge, Alho, Mirra, Anti-Inveja e mais"
-    },
-    {
-      icon: Zap,
-      title: "Prosperidade",
-      color: "from-yellow-500/20 to-yellow-600/10",
-      borderColor: "border-yellow-500/30",
-      items: "Canela, Louro, Manjericão, Mel, Abundância e mais"
-    },
-    {
-      icon: Heart,
-      title: "Amor",
-      color: "from-pink-500/20 to-pink-600/10",
-      borderColor: "border-pink-500/30",
-      items: "Rosas, Pétalas Vermelhas, Jasmim, Sedução e mais"
-    },
-    {
-      icon: TrendingUp,
-      title: "Sucesso",
-      color: "from-purple-500/20 to-purple-600/10",
-      borderColor: "border-purple-500/30",
-      items: "Vitória, Abre Caminhos, Vencedor, Oportunidades e mais"
-    },
-    {
-      icon: Moon,
-      title: "Ritualísticos",
-      color: "from-indigo-500/20 to-indigo-600/10",
-      borderColor: "border-indigo-500/30",
-      items: "Lua Cheia, Ano Novo, Iemanjá, Oxum, Orixás e mais"
-    },
-    {
-      icon: Flower2,
-      title: "Beleza",
-      color: "from-rose-500/20 to-rose-600/10",
-      borderColor: "border-rose-500/30",
-      items: "Rosas Brancas, Leite e Mel, Deusa, Encanto Natural e mais"
-    },
-    {
-      icon: TrendingUp,
-      title: "Energia Vital",
-      color: "from-orange-500/20 to-orange-600/10",
-      borderColor: "border-orange-500/30",
-      items: "Poder Pessoal, Coragem, Força, Autoconfiança e mais"
-    },
-  ];
-
-  return (
-    <section className="py-16 px-4 bg-card/30">
-      <div className="max-w-6xl mx-auto space-y-12">
-        <h2 className="text-3xl md:text-4xl font-bold text-center">
-          <span className="text-primary">O QUE VOCÊ RECEBE:</span>
-        </h2>
-        <p className="text-xl text-center text-muted-foreground">
-          120 BANHOS ENERGÉTICOS prontos para aplicar
-        </p>
-
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {categories.map((category) => {
-            const Icon = category.icon;
-            return (
-              <Card 
-                key={category.title}
-                className={`p-6 bg-gradient-to-br ${category.color} border-2 ${category.borderColor} hover-elevate`}
-                data-testid={`card-category-${category.title.toLowerCase()}`}
-              >
-                <div className="flex items-center gap-3 mb-3">
-                  <Icon className="w-6 h-6 text-primary" />
-                  <h3 className="text-lg font-bold">{category.title}</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {[
+              { icon: Bird, title: 'Paz Interior', desc: 'Energia leve e calma' },
+              { icon: Shield, title: 'Proteção', desc: 'Contra energias negativas' },
+              { icon: Sparkles, title: 'Limpeza', desc: 'Descarrego profundo' },
+              { icon: Flame, title: 'Transformação', desc: 'Vida renovada' },
+              { icon: Heart, title: 'Equilíbrio', desc: 'Harmonia espiritual' },
+              { icon: Sun, title: 'Elevação', desc: 'Vibração elevada' },
+            ].map((item, idx) => {
+              const Icon = item.icon;
+              return (
+                <div
+                  key={idx}
+                  data-animate
+                  id={`benefit-${idx}`}
+                  className={`p-6 bg-white rounded-2xl border-2 border-[#FFD9B3] text-center transition-all duration-300 hover:shadow-xl hover:border-[#FF9F45] hover:-translate-y-2 cursor-pointer ${
+                    visibleSections[`benefit-${idx}`] ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+                  }`}
+                >
+                  <Icon size={40} className="text-[#FF9F45] mx-auto mb-4" />
+                  <h3 className="font-black text-xl mb-2 text-[#333333]">{item.title}</h3>
+                  <p className="text-[#333333]">{item.desc}</p>
                 </div>
-                <p className="text-sm text-muted-foreground">{category.items}</p>
-              </Card>
-            );
-          })}
-        </div>
-
-        <Card className="bg-gradient-to-r from-primary/20 to-secondary/20 p-8 border-2 border-primary">
-          <h3 className="text-2xl font-bold text-center mb-6">
-            <span className="text-primary">+ BÔNUS EXCLUSIVOS INCLUSOS:</span>
-          </h3>
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="flex items-start gap-3">
-              <Star className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-              <p>Guia de Preparação de Banhos</p>
-            </div>
-            <div className="flex items-start gap-3">
-              <Star className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-              <p>Calendário Lunar para Banhos</p>
-            </div>
-            <div className="flex items-start gap-3">
-              <Star className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-              <p>Manual de Ervas e Seus Poderes</p>
-            </div>
-            <div className="flex items-start gap-3">
-              <Star className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-              <p>Orações e Mantras para Potencializar</p>
-            </div>
-          </div>
-        </Card>
-      </div>
-    </section>
-  );
-}
-
-function AuthorSection() {
-  return (
-    <section className="py-12 px-4">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex flex-col md:grid md:grid-cols-2 gap-8 md:items-center">
-          <div className="flex flex-col items-center justify-center">
-            <div className="relative w-full max-w-xs">
-              <div className="border-3 border-primary/30 rounded-lg overflow-hidden shadow-lg aspect-[3/4]">
-                <img 
-                  src="https://i.ibb.co/FkSRM3zG/Chat-GPT-Image-19-de-nov-de-2025-19-46-47.png"
-                  alt="Marina Silva"
-                  className="w-full h-full object-contain"
-                />
-              </div>
-              <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-4/5">
-                <div className="bg-primary text-primary-foreground py-2 px-4 rounded-md text-center text-sm font-bold whitespace-nowrap">
-                  Marina Silva
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <h2 className="text-2xl md:text-3xl font-bold text-center md:text-left">
-              CONHEÇA A AUTORA
-            </h2>
-            
-            <p className="text-base text-center md:text-left">
-              <span className="font-bold text-primary">Marina Silva</span> é aromaterapeuta especialista em rituais energéticos com 10+ anos de experiência transformando vidas através dos banhos energéticos.
-            </p>
-
-            <Card className="bg-secondary/20 p-4 border-l-4 border-primary">
-              <p className="italic text-sm text-center md:text-left">
-                "Minha missão é democratizar acesso aos banhos energéticos. Cada banho é oportunidade de renovação."
-              </p>
-              <p className="font-bold text-sm mt-2 text-center md:text-left">— Marina Silva</p>
-            </Card>
+              );
+            })}
           </div>
         </div>
-      </div>
-    </section>
-  );
-}
+      </section>
 
-interface PricingSectionProps {
-  basicPlan: Plan;
-  premiumPlan: Plan;
-  onBasicClick: () => void;
-  onPremiumClick: () => void;
-  isLoading: boolean;
-}
+      {/* BÔNUS */}
+      <section className="py-20 px-4">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-4xl md:text-5xl font-black text-center mb-16 text-[#333333]">Bônus Exclusivos</h2>
 
-const PricingSection = React.forwardRef<HTMLElement, PricingSectionProps>(
-  ({ basicPlan, premiumPlan, onBasicClick, onPremiumClick, isLoading }, ref) => {
-  return (
-    <section ref={ref} className="py-16 px-4 bg-card/30">
-      <div className="max-w-6xl mx-auto space-y-8">
-        <div className="text-center space-y-4">
-          <h2 className="text-3xl md:text-4xl font-bold">
-            <span className="text-primary">OFERTA ESPECIAL POR TEMPO LIMITADO</span>
-          </h2>
-          <div className="flex items-start justify-center gap-2 text-destructive">
-            <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5" />
-            <p className="font-semibold">Esta oferta pode encerrar a qualquer momento!</p>
-          </div>
-        </div>
-
-        <div className="text-center space-y-2">
-          <p className="text-sm text-muted-foreground">Valor Real do Produto Completo:</p>
-          <p className="text-3xl font-bold line-through text-muted-foreground">R$ 67,00</p>
-          <p className="text-sm text-destructive font-semibold">
-            Não pague R$ 67,00
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 max-w-4xl mx-auto px-0">
-          <Card 
-            className="p-6 md:p-8 space-y-6 border-2"
-            data-testid="card-plan-basic"
-          >
-            <div className="text-center space-y-2">
-              <h3 className="text-lg md:text-2xl font-bold">{basicPlan.bathCount} BANHOS</h3>
-              <div className="space-y-1">
-                <p className="text-3xl md:text-4xl font-bold text-primary">R$ {basicPlan.price.toFixed(2)}</p>
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              {basicPlan.features.map((feature, idx) => (
-                <div key={idx} className="flex items-start gap-2">
-                  <CheckCircle className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                  <span className="text-sm">{feature}</span>
-                </div>
-              ))}
-            </div>
-
-            <Button 
-              size="lg" 
-              className="w-full bg-primary/80 hover:bg-primary"
-              onClick={onBasicClick}
-              disabled={isLoading}
-              data-testid="button-buy-basic"
-            >
-              {isLoading ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Processando...
-                </>
-              ) : (
-                "COMPRAR AGORA"
-              )}
-            </Button>
-          </Card>
-
-          <Card 
-            className="p-6 md:p-8 space-y-6 border-4 border-primary relative transform md:scale-110 shadow-2xl ring-2 ring-primary/50"
-            data-testid="card-plan-premium"
-          >
-            <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-              <Badge className="bg-destructive text-destructive-foreground px-3 md:px-4 py-0.5 md:py-1 text-xs md:text-sm font-bold">
-                {premiumPlan.badge}
-              </Badge>
-            </div>
-
-            <div className="text-center space-y-2">
-              <h3 className="text-lg md:text-2xl font-bold">{premiumPlan.bathCount} BANHOS</h3>
-              <div className="space-y-1">
-                <p className="text-4xl md:text-5xl font-bold text-primary">R$ {premiumPlan.price.toFixed(2)}</p>
-                <p className="text-xs md:text-sm font-semibold text-foreground uppercase">
-                  Acesso Completo e Vitalício
-                </p>
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              {premiumPlan.features.map((feature, idx) => (
-                <div key={idx} className="flex items-start gap-2">
-                  <CheckCircle className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                  <span className="text-sm font-medium">{feature}</span>
-                </div>
-              ))}
-            </div>
-
-            <Button 
-              size="lg" 
-              className="w-full text-lg py-6 bg-primary hover:bg-primary/90 animate-gentle-zoom"
-              onClick={onPremiumClick}
-              disabled={isLoading}
-              data-testid="button-buy-premium"
-            >
-              {isLoading ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Processando...
-                </>
-              ) : (
-                "GARANTIR ACESSO COMPLETO"
-              )}
-            </Button>
-          </Card>
-        </div>
-
-        <div className="flex flex-col items-center gap-2 text-sm text-center text-muted-foreground mt-8">
-          <div className="flex items-center gap-2">
-            <CheckCircle className="w-4 h-4 text-primary" />
-            <span>Acesso imediato após confirmação do pagamento</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <CheckCircle className="w-4 h-4 text-primary" />
-            <span>Compra 100% segura e protegida</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <CheckCircle className="w-4 h-4 text-primary" />
-            <span>Garantia incondicional de 7 dias</span>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-});
-
-PricingSection.displayName = "PricingSection";
-
-interface UpsellModalProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  upsellPlan: Plan;
-  onAccept: () => void;
-  onDecline: () => void;
-  isLoading: boolean;
-}
-
-function UpsellModal({ open, onOpenChange, upsellPlan, onAccept, onDecline, isLoading }: UpsellModalProps) {
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg max-h-screen overflow-y-auto p-4 sm:p-6" data-testid="modal-upsell">
-        <DialogHeader className="space-y-2">
-          <div className="flex items-center justify-center">
-            <AlertTriangle className="w-6 h-6 text-primary" />
-          </div>
-          <DialogTitle className="text-xl sm:text-2xl text-center font-bold">
-            ESPERE! OFERTA EXCLUSIVA
-          </DialogTitle>
-          <DialogDescription className="text-center space-y-2 pt-2">
-            <p className="text-xs sm:text-sm">
-              Antes de finalizar, oferta <span className="text-foreground font-bold">única</span>!
-            </p>
-            <p className="text-destructive font-semibold text-xs sm:text-sm">
-              R$ 17,00 - só agora!
-            </p>
-          </DialogDescription>
-        </DialogHeader>
-
-        <div className="space-y-3">
-          <Card className="p-4 border-4 border-primary bg-gradient-to-br from-primary/10 to-secondary/10">
-            <div className="space-y-3">
-              <div className="text-center">
-                <Badge className="bg-destructive text-destructive-foreground px-2 py-0.5 text-xs font-bold mb-2">
-                  {upsellPlan.badge}
-                </Badge>
-                <h3 className="text-lg font-bold mb-2">
-                  {upsellPlan.bathCount} BANHOS
-                </h3>
-                <div className="flex items-center justify-center gap-2 flex-wrap justify-center">
-                  <span className="text-sm line-through text-muted-foreground">
-                    R$ {upsellPlan.originalPrice?.toFixed(2)}
-                  </span>
-                  <span className="text-3xl font-bold text-primary">
-                    R$ {upsellPlan.price.toFixed(2)}
-                  </span>
-                </div>
-              </div>
-
-              <div className="space-y-1">
-                {upsellPlan.features.map((feature, idx) => (
-                  <div key={idx} className="flex items-start gap-1.5">
-                    <CheckCircle className="w-3 h-3 text-primary flex-shrink-0 mt-0.5" />
-                    <span className="text-xs">{feature}</span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { image: bonus1Image, title: 'Guia de Proteção Contra Inveja', price: 47 },
+              { image: bonus2Image, title: '20 Rituais Energéticos de Prosperidade', price: 37 },
+              { image: bonus3Image, title: 'Grupo VIP Espiritualidade', price: 97 },
+              { image: bonus4Image, title: '30 Rituais Energéticos Atração de Pessoas', price: 197 },
+            ].map((bonus, idx) => (
+              <div key={idx} data-animate id={`bonus-${idx}`} className={`transition-all duration-700 ${visibleSections[`bonus-${idx}`] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
+                <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 hover:-translate-y-2 cursor-pointer">
+                  <img src={bonus.image} alt={bonus.title} className="w-full h-48 object-cover transition-transform duration-300 hover:scale-110" />
+                  <div className="p-4">
+                    <h3 className="font-black text-[#333333] mb-2 text-sm">{bonus.title}</h3>
+                    <p className="text-2xl font-black text-[#FF9F45]">R$ {bonus.price}</p>
                   </div>
-                ))}
+                </div>
               </div>
-            </div>
-          </Card>
-        </div>
-
-        <div className="space-y-2 mt-4">
-          <Button 
-            size="lg" 
-            className="w-full text-base py-5 bg-primary hover:bg-primary/90"
-            onClick={onAccept}
-            disabled={isLoading}
-            data-testid="button-upsell-yes"
-          >
-            {isLoading ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Processando...
-              </>
-            ) : (
-              "SIM! QUERO POR R$ 17,00"
-            )}
-          </Button>
-          <Button 
-            size="lg" 
-            variant="outline"
-            className="w-full py-5"
-            onClick={onDecline}
-            disabled={isLoading}
-            data-testid="button-upsell-no"
-          >
-            {isLoading ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Processando...
-              </>
-            ) : (
-              "Manter R$ 10,00"
-            )}
-          </Button>
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
-}
-
-interface GuaranteeSectionProps {
-  onCTAClick: () => void | string;
-}
-
-function GuaranteeSection({ onCTAClick }: GuaranteeSectionProps) {
-  return (
-    <section className="py-16 px-4 overflow-x-hidden">
-      <div className="max-w-3xl mx-auto">
-        <Card className="p-8 md:p-12 border-4 border-primary bg-gradient-to-br from-primary/10 to-secondary/10 text-center space-y-6">
-          <div className="flex justify-center">
-            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg">
-              <div className="text-center">
-                <Shield className="w-10 h-10 text-primary-foreground mx-auto mb-1" />
-                <p className="text-sm font-bold text-primary-foreground">7 DIAS</p>
-              </div>
-            </div>
+            ))}
           </div>
 
-          <h2 className="text-3xl font-bold">
-            GARANTIA INCONDICIONAL<br />
-            <span className="text-primary">DE 7 DIAS</span>
-          </h2>
-
-          <p className="text-lg">
-            Você tem <span className="font-bold">7 dias completos</span> para testar os banhos energéticos. Se
-            por qualquer motivo você não se sentir satisfeito(a), basta enviar um
-            e-mail e <span className="font-bold text-primary">devolvemos 100% do seu investimento</span>.
-          </p>
-
-          <p className="text-sm text-muted-foreground">
-            Ou seja, você pode testar completamente sem risco. Você tem 7 dias.
-            Se funcionar para você, ótimo! Se não, devolvemos seu dinheiro.
-          </p>
-
-          <p className="text-xl font-bold text-primary">
-            O risco é todo nosso!
-          </p>
-
-          <Button size="lg" className="mt-6" onClick={onCTAClick} data-testid="button-guarantee-cta">
-            TESTAR SEM RISCO
-          </Button>
-        </Card>
-      </div>
-    </section>
-  );
-}
-
-function TestimonialsSection() {
-  const testimonials = [
-    {
-      name: "Letícia Martins",
-      image: "https://i.ibb.co/d4PCZ5cK/Foto-de-Perfil-Mulher-Negra-Brasileira.png",
-      text: "Depois que comecei a usar os banhos do guia, minha vida mudou completamente. Consegui um emprego melhor, minhas energias estão leves e até meu relacionamento melhorou! Recomendo demais.",
-      rating: 5
-    },
-    {
-      name: "Mariana Santos",
-      image: "https://i.ibb.co/4RJQP6GT/Foto-de-Perfil-Realista-Sorrindo.png",
-      text: "Estava muito cética, mas após o primeiro banho de proteção já senti a diferença! Parece que um peso saiu das minhas costas. Agora faço regularmente e sinto que tudo flui melhor em minha vida.",
-      rating: 5
-    },
-    {
-      name: "Rodrigo Silva",
-      image: "https://i.ibb.co/gHqLbyQ/Foto-de-Perfil-Realista.png",
-      text: "Comprei para minha esposa, mas acabei fazendo também. Os banhos de prosperidade realmente funcionam! Conseguimos pagar dívidas antigas e ainda sobrou. É incrível como a energia muda tudo.",
-      rating: 5
-    },
-  ];
-
-  return (
-    <section className="py-16 px-4 bg-card/30">
-      <div className="max-w-6xl mx-auto space-y-12">
-        <h2 className="text-3xl md:text-4xl font-bold text-center">
-          VEJA O QUE NOSSOS CLIENTES<br />
-          <span className="text-primary">DIZEM:</span>
-        </h2>
-
-        <p className="text-center text-muted-foreground">
-          Centenas de pessoas já transformaram suas vidas
-        </p>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {testimonials.map((testimonial, idx) => (
-            <Card 
-              key={idx} 
-              className="p-6 space-y-4 hover-elevate"
-              data-testid={`card-testimonial-${idx}`}
-            >
-              <div className="flex gap-1">
-                {[...Array(testimonial.rating)].map((_, i) => (
-                  <Star key={i} className="w-5 h-5 fill-primary text-primary" />
-                ))}
-              </div>
-              <p className="text-sm italic">"{testimonial.text}"</p>
-              <div className="flex items-center gap-2 pt-2 border-t border-border">
-                <img 
-                  src={testimonial.image} 
-                  alt={testimonial.name}
-                  className="w-10 h-10 rounded-full object-cover flex-shrink-0"
-                  data-testid={`img-testimonial-${idx}`}
-                />
-                <p className="font-bold text-sm">— {testimonial.name}</p>
-              </div>
-            </Card>
-          ))}
+          <div className="text-center mt-16 space-y-4">
+            <p className="text-xl md:text-2xl font-black text-[#333333]">Total de Bônus: <span className="line-through text-[#FFB366]">R$ 378</span></p>
+            <p className="text-4xl md:text-5xl font-black text-[#FF9F45]">HOJE: GRÁTIS</p>
+          </div>
         </div>
-      </div>
-    </section>
-  );
-}
+      </section>
 
-function FAQSection() {
-  const faqs = [
-    {
-      question: "Como vou receber o produto?",
-      answer: "Após a confirmação do pagamento, você receberá imediatamente um e-mail com o link para download de todo o material em PDF. Você pode baixar e consultar quando quiser, de qualquer dispositivo."
-    },
-    {
-      question: "Preciso de ingredientes caros ou difíceis?",
-      answer: "Não! Todos os banhos foram criados com ingredientes fáceis de encontrar em mercados, feiras e lojas de produtos naturais. Priorizamos receitas acessíveis e práticas."
-    },
-    {
-      question: "Os banhos são complicados de preparar?",
-      answer: "De forma alguma! Cada receita vem com instruções passo a passo super simples. Mesmo quem nunca fez um banho energético consegue preparar facilmente."
-    },
-    {
-      question: "Em quanto tempo vou sentir os resultados?",
-      answer: "Os resultados variam de pessoa para pessoa, mas muitos clientes relatam sensações de leveza e proteção logo após o primeiro banho. Os efeitos mais profundos aparecem com a prática regular."
-    },
-    {
-      question: "Qual é a garantia do produto?",
-      answer: "Oferecemos garantia incondicional de 7 dias. Se você não gostar ou não se sentir satisfeito por qualquer motivo, devolvemos 100% do seu dinheiro sem questionamentos."
-    },
-  ];
+      {/* PLANOS */}
+      <section id="pricing-section" className="py-20 px-4 bg-blue-50">
+        <div className="max-w-5xl mx-auto">
+          {/* COUNTDOWN HEADER */}
+          <div className="text-center mb-16 space-y-6">
+            <h2 className="text-2xl font-black text-red-500">OFERTA LIMITADA -<br />TERMINA EM:</h2>
+            <div className="text-6xl md:text-7xl font-black font-mono text-[#FF9F45]">{countdown}</div>
+          </div>
 
-  return (
-    <section className="py-16 px-4">
-      <div className="max-w-3xl mx-auto space-y-8">
-        <h2 className="text-3xl md:text-4xl font-bold text-center">
-          <span className="text-primary">PERGUNTAS FREQUENTES ?</span>
-        </h2>
+          {/* PLANOS */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* BÁSICO */}
+            <div data-animate id="plan-basic" className={`p-8 bg-white rounded-3xl border border-gray-200 transition-all duration-300 text-center hover:shadow-lg hover:-translate-y-2 cursor-pointer ${visibleSections['plan-basic'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
+              <h3 className="text-3xl font-black mb-3 text-[#333333]">Plano Básico</h3>
+              <p className="text-[#666] mb-8 font-semibold">Para começar sua limpeza espiritual</p>
+              
+              <div className="space-y-2 mb-10">
+                <p className="text-gray-400 line-through text-lg">R$ 49,99</p>
+                <p className="text-4xl md:text-6xl font-black text-[#FF9F45]">R$ 7,99</p>
+              </div>
 
-        <Accordion type="single" collapsible className="space-y-4">
-          {faqs.map((faq, idx) => (
-            <AccordionItem 
-              key={idx} 
-              value={`item-${idx}`}
-              className="border border-border rounded-md px-6"
-            >
-              <AccordionTrigger className="text-left font-semibold hover:no-underline">
-                {faq.question}
+              <ul className="space-y-4 mb-10 text-left">
+                <li className="flex items-center gap-3 text-[#333333]"><span className="text-[#333333] text-xl">✓</span> 20 banhos de descarrego</li>
+                <li className="flex items-center gap-3 text-[#333333]"><span className="text-[#333333] text-xl">✓</span> Acesso por 30 dias</li>
+                <li className="flex items-center gap-3 text-[#333333]"><span className="text-[#333333] text-xl">✓</span> Formato PDF</li>
+                <li className="flex items-center gap-3 text-[#333333]"><span className="text-[#333333] text-xl">✓</span> Suporte por email</li>
+              </ul>
+
+              <button onClick={() => handleCheckout('Plano Básico')} className="w-full py-4 bg-gray-600 text-white font-black text-lg rounded-full hover:bg-gray-700 hover:shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 mb-6 cursor-pointer" data-testid="button-plan-basic">
+                QUERO O BÁSICO
+              </button>
+
+              <p className="text-center text-gray-500 text-xs italic">
+                Mas antes de comprar... temos uma oferta AINDA MAIS vantajosa para você! Veja logo abaixo ↓
+              </p>
+            </div>
+
+            {/* PREMIUM */}
+            <div data-animate id="plan-premium" className={`p-8 bg-[#EBEBEB] rounded-3xl border-4 border-[#FF9F45] transition-all duration-300 relative text-center hover:shadow-2xl hover:-translate-y-2 hover:scale-105 cursor-pointer ${visibleSections['plan-premium'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
+              <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 md:left-auto md:right-8 md:transform-none bg-red-400 text-white px-4 md:px-6 py-2 rounded-full font-black text-xs md:text-sm">MAIS VENDIDO</div>
+              
+              <h3 className="text-3xl font-black mb-3 text-[#333333] mt-4">Plano Premium</h3>
+              <p className="text-[#666] mb-8 font-semibold">Para quem quer proteção espiritual completa</p>
+              
+              <div className="space-y-2 mb-10">
+                <p className="text-gray-400 line-through text-lg">R$ 97,00</p>
+                <p className="text-4xl md:text-6xl font-black bg-gradient-to-r from-[#FF9F45] to-yellow-400 bg-clip-text text-transparent">R$ 17,99</p>
+              </div>
+
+              <ul className="space-y-4 mb-10 text-left">
+                <li className="flex items-center gap-3 text-[#333333]"><span className="text-[#333333] text-xl">✓</span> Os 50 banhos completos</li>
+                <li className="flex items-center gap-3 text-[#333333]"><span className="text-[#333333] text-xl">✓</span> Acesso vitalício</li>
+                <li className="flex items-center gap-3 text-[#333333]"><span className="text-[#333333] text-xl">✓</span> Atualizações mensais</li>
+                <li className="flex items-center gap-3 text-[#333333]"><span className="text-[#333333] text-xl">✓</span> Arquivos editáveis: PDF, DOCX</li>
+                <li className="flex items-center gap-3 text-[#333333]"><span className="text-[#333333] text-xl">✓</span> Ebook extra "15 rituais para atrair amizades boas e afastar as ruins"</li>
+                <li className="flex items-center gap-3 text-[#333333]"><span className="text-[#333333] text-xl">✓</span> Suporte prioritário</li>
+              </ul>
+
+              <div className="bg-[#EBEBEB] p-6 mb-10 space-y-3">
+                <p className="text-sm text-[#333333]"><Gift size={18} className="inline text-[#FF9F45] mr-2" /> BÔNUS #1: Guia de Proteção Contra Inveja</p>
+                <p className="text-sm text-[#333333]"><Gift size={18} className="inline text-[#FF9F45] mr-2" /> BÔNUS #2: 20 Rituais Energéticos para Prosperidade</p>
+                <p className="text-sm text-[#333333]"><Gift size={18} className="inline text-[#FF9F45] mr-2" /> BÔNUS #3: Grupo VIP de Espiritualidade</p>
+                <p className="text-sm text-[#333333]"><Gift size={18} className="inline text-[#FF9F45] mr-2" /> BÔNUS #4: 30 Rituais Energéticos para Atrair Pessoas</p>
+              </div>
+
+              <button id="button-plan-premium" onClick={() => handleCheckout('Plano Premium')} className="w-full py-4 bg-gradient-to-r from-[#FF9F45] to-yellow-400 text-white font-black text-lg rounded-full hover:shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer" data-testid="button-plan-premium">
+                GARANTIR O PREMIUM
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* O QUE NOSSOS CLIENTES DIZEM */}
+      <section className="py-20 px-4 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-black text-[#333333] mb-4">O Que Nossos Clientes Dizem</h2>
+            <p className="text-lg text-[#666] font-semibold">Histórias reais de transformação espiritual</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                image: client1Image,
+                name: 'Maria Silva',
+                profession: 'Terapeuta Holística',
+                testimonial: '"Os banhos são de uma potência excepcional. Minha energia mudou completamente desde que comecei a usar. Recomendo demais!"'
+              },
+              {
+                image: client2Image,
+                name: 'João Santos',
+                profession: 'Praticante de Umbanda',
+                testimonial: '"Finalmente encontrei receitas que seguem as tradições ancestrais. A eficácia é impressionante e os bônus valem muito a pena."'
+              },
+              {
+                image: client3Image,
+                name: 'Ana Costa',
+                profession: 'Consultora Espiritual',
+                testimonial: '"Investimento que se pagou na primeira semana. A variedade de banhos permite atender qualquer necessidade. Excelente!"'
+              }
+            ].map((client, idx) => (
+              <div key={idx} data-animate id={`testimonial-${idx}`} className={`bg-white rounded-2xl p-8 border border-[#E5E5E5] text-center transition-all duration-300 hover:shadow-xl hover:border-[#FF9F45]/50 hover:-translate-y-2 cursor-pointer ${visibleSections[`testimonial-${idx}`] ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
+                <div className="flex justify-center mb-6">
+                  <img src={client.image} alt={client.name} className="w-20 h-20 rounded-full border-4 border-[#FF9F45] object-cover" />
+                </div>
+                <h3 className="text-lg font-black text-[#333333] mb-1">{client.name}</h3>
+                <p className="text-sm text-[#FF9F45] font-semibold mb-4">{client.profession}</p>
+                <p className="text-[#555] italic leading-relaxed">{client.testimonial}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* GARANTIA */}
+      <section className="py-20 px-4 bg-[#FFF5E6]">
+        <div className="max-w-2xl mx-auto text-center">
+          <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="mx-auto mb-6">
+            <path d="M12 2L4 6V12C4 17.5 12 22 12 22C12 22 20 17.5 20 12V6L12 2Z" stroke="#FF9F45" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M9 12L11 14L15 10" stroke="#FF9F45" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          <h2 className="text-3xl font-black mb-6 text-[#333333]">Garantia Incondicional de 7 Dias</h2>
+          <p className="text-lg text-[#333333] leading-relaxed mb-4">Estamos tão confiantes na eficácia dos nossos banhos que oferecemos uma garantia incondicional de 7 dias. Se por qualquer motivo você não estiver completamente satisfeito, devolvemos 100% do seu investimento, sem perguntas.</p>
+          <p className="text-lg font-black text-[#333333]">Você não tem nada a perder e uma vida espiritual transformada a ganhar!</p>
+        </div>
+      </section>
+
+      {/* PERGUNTAS FREQUENTES */}
+      <section className="py-20 px-4 bg-white">
+        <div className="max-w-3xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-black text-[#333333] mb-3">Perguntas Frequentes</h2>
+            <p className="text-lg text-[#666]">Tire todas as suas dúvidas sobre os banhos</p>
+          </div>
+
+          <Accordion type="single" collapsible className="space-y-3">
+            <AccordionItem value="item-1" className="bg-[#FFF9F0] border-2 border-[#FFD9B3] rounded-xl px-6 transition-all duration-300 hover:border-[#FF9F45] hover:shadow-md">
+              <AccordionTrigger className="text-left font-black text-[#333333] hover:text-[#FF9F45] py-4">
+                Como recebo os banhos após a compra?
               </AccordionTrigger>
-              <AccordionContent className="text-muted-foreground">
-                {faq.answer}
+              <AccordionContent className="text-[#555] leading-relaxed pb-4">
+                Após a confirmação do pagamento, você recebe um email com o link de acesso imediato. Os arquivos estão disponíveis para download em PDF ou DOCX (conforme seu plano). Você pode acessar a qualquer hora do dia ou noite, em qualquer dispositivo.
               </AccordionContent>
             </AccordionItem>
-          ))}
-        </Accordion>
-      </div>
-    </section>
-  );
-}
 
-interface FinalCTAProps {
-  onBasicClick: () => void;
-  onPremiumClick: () => void;
-}
+            <AccordionItem value="item-2" className="bg-[#FFF9F0] border-2 border-[#FFD9B3] rounded-xl px-6 transition-all duration-300 hover:border-[#FF9F45] hover:shadow-md">
+              <AccordionTrigger className="text-left font-black text-[#333333] hover:text-[#FF9F45] py-4">
+                Em quais formatos os banhos estão disponíveis?
+              </AccordionTrigger>
+              <AccordionContent className="text-[#555] leading-relaxed pb-4">
+                No Plano Básico, os banhos estão em formato PDF. No Plano Premium, você recebe em PDF e DOCX (Word), permitindo que você edite, personalize e salve da forma que preferir.
+              </AccordionContent>
+            </AccordionItem>
 
-function FinalCTA({ onBasicClick, onPremiumClick }: FinalCTAProps) {
-  return (
-    <section className="py-16 px-4 bg-card/30">
-      <div className="max-w-3xl mx-auto">
-        <Card className="p-8 md:p-12 border-4 border-primary bg-gradient-to-br from-primary/10 to-secondary/10 text-center space-y-6">
-          <div className="flex items-center justify-center gap-2">
-            <AlertTriangle className="w-8 h-8 text-destructive" />
-          </div>
+            <AccordionItem value="item-3" className="bg-[#FFF9F0] border-2 border-[#FFD9B3] rounded-xl px-6 transition-all duration-300 hover:border-[#FF9F45] hover:shadow-md">
+              <AccordionTrigger className="text-left font-black text-[#333333] hover:text-[#FF9F45] py-4">
+                Preciso de conhecimento prévio em espiritualidade?
+              </AccordionTrigger>
+              <AccordionContent className="text-[#555] leading-relaxed pb-4">
+                Não! Os banhos são feitos para iniciantes e praticantes avançados. Cada receita vem com instruções claras e passo a passo. Você só precisa ter vontade de se transformar e elevar sua vibração.
+              </AccordionContent>
+            </AccordionItem>
 
-          <h2 className="text-3xl md:text-4xl font-bold">
-            VOCÊ ESTÁ A<br />
-            <span className="text-primary text-4xl md:text-5xl">UM CLIQUE DE DISTÂNCIA</span><br />
-            DE TRANSFORMAR SUA<br />
-            VIDA!
-          </h2>
+            <AccordionItem value="item-4" className="bg-[#FFF9F0] border-2 border-[#FFD9B3] rounded-xl px-6 transition-all duration-300 hover:border-[#FF9F45] hover:shadow-md">
+              <AccordionTrigger className="text-left font-black text-[#333333] hover:text-[#FF9F45] py-4">
+                A garantia realmente funciona?
+              </AccordionTrigger>
+              <AccordionContent className="text-[#555] leading-relaxed pb-4">
+                Sim! É 100% incondicional. Se em 7 dias você não gostar, devolvemos todo o seu dinheiro. Sem burocracia, sem perguntas. Confiamos totalmente na qualidade e potência dos nossos banhos.
+              </AccordionContent>
+            </AccordionItem>
 
-          <p className="text-lg">
-            Imagine acordar amanhã <span className="font-bold">com acesso a 120 banhos poderosos</span> que podem
-            desbloquear sua energia, atrair prosperidade e se livrar de tudo que te impede
-            de evoluir.
-          </p>
+            <AccordionItem value="item-5" className="bg-[#FFF9F0] border-2 border-[#FFD9B3] rounded-xl px-6 transition-all duration-300 hover:border-[#FF9F45] hover:shadow-md">
+              <AccordionTrigger className="text-left font-black text-[#333333] hover:text-[#FF9F45] py-4">
+                Qual a diferença entre o plano Básico e Premium?
+              </AccordionTrigger>
+              <AccordionContent className="text-[#555] leading-relaxed pb-4">
+                O Plano Básico inclui 20 banhos com acesso por 30 dias. O Plano Premium inclui os 50 banhos completos, acesso vitalício, atualizações mensais, arquivos editáveis e 4 bônus exclusivos no valor de R$ 378. Premium é mais completo e mais em conta!
+              </AccordionContent>
+            </AccordionItem>
 
-          <p className="text-muted-foreground">
-            Você pode continuar lutando contra energias bloqueadas, <span className="font-semibold text-foreground">
-            ou pode tomar a decisão que</span> <span className="font-bold text-primary">centenas de pessoas</span> já
-            tomaram!
-          </p>
+            <AccordionItem value="item-6" className="bg-[#FFF9F0] border-2 border-[#FFD9B3] rounded-xl px-6 transition-all duration-300 hover:border-[#FF9F45] hover:shadow-md">
+              <AccordionTrigger className="text-left font-black text-[#333333] hover:text-[#FF9F45] py-4">
+                Posso usar os banhos para ajudar outras pessoas?
+              </AccordionTrigger>
+              <AccordionContent className="text-[#555] leading-relaxed pb-4">
+                Com certeza! Você pode compartilhar as receitas e conhecimento com amigos, familiares e clientes. Muitos terapeutas, videntes e praticantes espirituais usam nossos banhos no seu trabalho com excelentes resultados.
+              </AccordionContent>
+            </AccordionItem>
 
-          <Card className="bg-secondary/20 p-6 border-2 border-destructive">
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <p className="text-destructive font-bold uppercase">⚠️ Última chance!</p>
-            </div>
-            <p className="text-sm">
-              Esta oferta de R$ 27,00 pode encerrar a qualquer momento. Não deixe a
-              oportunidade passar!
-            </p>
-          </Card>
+            <AccordionItem value="item-7" className="bg-[#FFF9F0] border-2 border-[#FFD9B3] rounded-xl px-6 transition-all duration-300 hover:border-[#FF9F45] hover:shadow-md">
+              <AccordionTrigger className="text-left font-black text-[#333333] hover:text-[#FF9F45] py-4">
+                Terei acesso a novos banhos no futuro?
+              </AccordionTrigger>
+              <AccordionContent className="text-[#555] leading-relaxed pb-4">
+                Sim! Se você tiver o Plano Premium, recebe atualizações mensais com novos banhos, rituais e conteúdos exclusivos. No Plano Básico, você tem acesso por 30 dias, após isso pode renovar quando desejar.
+              </AccordionContent>
+            </AccordionItem>
 
-          <div className="space-y-3 pt-4">
-            <Button 
-              size="lg" 
-              className="w-full text-sm md:text-lg py-6"
-              onClick={onPremiumClick}
-              data-testid="button-final-cta-premium"
-            >
-              GARANTIR ACESSO PREMIUM AGORA
-            </Button>
-            <Button 
-              size="lg" 
-              variant="outline"
-              className="w-full"
-              onClick={onBasicClick}
-              data-testid="button-final-cta-basic"
-            >
-              Ver Plano Básico
-            </Button>
-          </div>
-
-          <div className="flex flex-col items-center gap-2 text-sm text-muted-foreground pt-4">
-            <div className="flex items-center gap-2">
-              <CheckCircle className="w-4 h-4 text-primary" />
-              <span>Pagamento 100% seguro</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle className="w-4 h-4 text-primary" />
-              <span>Entrega instantânea via e-mail</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle className="w-4 h-4 text-primary" />
-              <span>Acesso vitalício ao material</span>
-            </div>
-          </div>
-        </Card>
-      </div>
-    </section>
-  );
-}
-
-function Footer() {
-  return (
-    <footer className="py-8 px-4 border-t border-border overflow-x-hidden">
-      <div className="max-w-4xl mx-auto text-center space-y-4">
-        <div className="p-4 bg-primary/10 border-2 border-primary rounded-lg space-y-2">
-          <div className="flex items-center justify-center gap-2">
-            <AlertTriangle className="w-5 h-5 text-primary flex-shrink-0" />
-            <p className="font-bold text-primary">AVISO IMPORTANTE</p>
-          </div>
-          <p className="text-sm text-foreground">
-            Os banhos energéticos são <span className="font-semibold">práticas complementares de bem-estar e espiritualidade</span>. 
-            Os resultados podem variar de acordo com a <span className="font-semibold">dedicação e receptividade de cada pessoa</span>.
-            <span className="block mt-2 text-primary font-semibold">Não substituem consultas com profissionais qualificados.</span>
-          </p>
+            <AccordionItem value="item-8" className="bg-[#FFF9F0] border-2 border-[#FFD9B3] rounded-xl px-6 transition-all duration-300 hover:border-[#FF9F45] hover:shadow-md">
+              <AccordionTrigger className="text-left font-black text-[#333333] hover:text-[#FF9F45] py-4">
+                Como funciona o suporte?
+              </AccordionTrigger>
+              <AccordionContent className="text-[#555] leading-relaxed pb-4">
+                Nosso suporte é feito exclusivamente por email. Se tiver dúvidas, problemas de acesso ou qualquer outra questão, envie um email para <span className="font-black text-[#FF9F45]">horizontenovosuporte@gmail.com</span> e responderemos em até 24h com a solução.
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </div>
-        
-        <p className="text-sm text-muted-foreground">
-          © 2025 Banhos Energéticos. Todos os direitos reservados.
-        </p>
-        <p className="text-xs text-muted-foreground">
-          Desenvolvido com amor para transformar energias e vidas.
-        </p>
-      </div>
-    </footer>
+      </section>
+
+      {/* CTA FINAL */}
+      <section className="py-20 px-4 bg-white text-center">
+        <div className="max-w-3xl mx-auto space-y-6">
+          <h2 className="text-4xl md:text-5xl font-black text-[#333333]">Não Perca Esta Oportunidade!</h2>
+          
+          <p className="text-lg text-[#333333] leading-relaxed">
+            Aprenda com os banhos de um jeito fácil e envolvente: são mais de 50 receitas poderosas prontas para transformar sua vida espiritual!
+          </p>
+          
+          <div className="space-y-3 pt-4">
+            <p className="text-2xl font-black text-red-500">OFERTA LIMITADA - ACABA EM BREVE!</p>
+            <p className="text-xl font-black text-[#FF9F45]">Garantia incondicional de 7 dias</p>
+          </div>
+
+          <button
+            onClick={() => scrollToSection('button-plan-premium')}
+            className="px-6 md:px-16 py-4 bg-gradient-to-r from-[#FF9F45] to-yellow-400 text-white font-black text-lg rounded-full hover:shadow-lg transition-all hover:scale-105 mx-auto block w-full md:w-auto"
+            data-testid="button-cta-final"
+          >
+            GARANTIR MEUS BANHOS AGORA
+          </button>
+          
+          <p className="text-[#666] text-sm pt-4">Acesso imediato • Pagamento 100% seguro • Garantia de 7 dias</p>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="py-8 px-4 border-t-2 border-[#FFD9B3] text-center text-white text-sm" style={{ backgroundColor: '#34383B' }}>
+        <p>50 Banhos de Descarrego Pesado. Todos os direitos reservados. © 2025</p>
+      </footer>
+    </div>
   );
 }
