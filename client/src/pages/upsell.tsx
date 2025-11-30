@@ -48,12 +48,12 @@ export default function UpsellPage() {
 
   const handleAcceptUpsell = () => {
     localStorage.setItem('scrollPosition', window.scrollY.toString());
-    window.open('https://go.invictuspay.app.br/fndzv', '_blank');
+    window.location.href = 'https://go.invictuspay.app.br/fndzv';
   };
 
   const handleRejectUpsell = () => {
     localStorage.setItem('scrollPosition', window.scrollY.toString());
-    window.open('https://go.invictuspay.app.br/3asbcxnibo', '_blank');
+    window.location.href = 'https://go.invictuspay.app.br/3asbcxnibo';
   };
 
   // Restore scroll position when leaving upsell
@@ -79,26 +79,22 @@ export default function UpsellPage() {
       </div>
 
       {/* STICKY BANNER */}
-      <div className="sticky top-0 z-50 bg-gradient-to-r from-[#FF9F45] via-yellow-400 to-[#FF9F45] text-white py-4 px-4 text-center font-black shadow-2xl animate-zoom-boom">
-        <p className="text-sm md:text-base flex items-center justify-center gap-2">
-          <Zap size={20} className="animate-spin" />
-          OFERTA EXCLUSIVA - VÁLIDA APENAS NESTE MOMENTO!
-          <Zap size={20} className="animate-spin" />
-        </p>
+      <div className="sticky top-0 z-50 bg-gradient-to-r from-[#FF9F45] to-yellow-400 text-white py-3 px-4 text-center font-black shadow-lg">
+        <p className="text-sm md:text-base">🔥 OFERTA EXCLUSIVA - VÁLIDA APENAS NESTE MOMENTO!</p>
       </div>
 
       {/* HERO WITH PARALLAX */}
       <section className="relative pt-8 md:pt-16 pb-16 px-4 z-10">
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* LEFT - OFFER SPOTLIGHT */}
-            <div data-animate id="hero-left" className={`space-y-8 transition-all duration-1000 transform ${visibleSections['hero-left'] ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-12'}`}>
-              <div className="space-y-4">
-                <div className="inline-block bg-red-500 text-white px-6 py-2 rounded-full font-black text-sm animate-bounce">
-                  ESPERA! NÃO PERCA!
+          <div className="grid grid-cols-1 gap-12">
+            {/* HERO CENTERED */}
+            <div data-animate id="hero-left" className={`space-y-8 transition-all duration-1000 transform text-center ${visibleSections['hero-left'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
+              <div className="space-y-6 flex flex-col items-center">
+                <div className="inline-block bg-red-500 text-white px-8 py-3 rounded-full font-black text-base animate-bounce">
+                  🚨 ESPERA! NÃO PERCA!
                 </div>
                 
-                <h1 className="text-3xl md:text-5xl lg:text-7xl font-black leading-tight">
+                <h1 className="text-3xl md:text-5xl lg:text-7xl font-black leading-tight max-w-2xl">
                   <span className="text-[#333333]">Você estava prestes a</span>
                   <br />
                   <span className="bg-gradient-to-r from-[#FF9F45] to-yellow-400 bg-clip-text text-transparent">PERDER</span>
@@ -109,7 +105,7 @@ export default function UpsellPage() {
                 </h1>
               </div>
 
-              <div className="relative">
+              <div className="relative max-w-xl mx-auto w-full">
                 <div className="absolute inset-0 bg-gradient-to-r from-[#FF9F45] to-yellow-400 rounded-3xl blur-2xl opacity-30 animate-pulse" />
                 <div className="relative bg-gradient-to-br from-white to-[#FFF9F0] border-2 border-[#FF9F45] rounded-3xl p-8 space-y-6">
                   <div className="space-y-4">
@@ -152,8 +148,11 @@ export default function UpsellPage() {
               </div>
             </div>
 
-            {/* RIGHT - PREMIUM BADGE */}
-            <div data-animate id="hero-right" className={`transition-all duration-1000 transform ${visibleSections['hero-right'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
+          </div>
+
+          {/* RIGHT - PREMIUM BADGE */}
+          <div className="mt-12">
+            <div data-animate id="hero-right" className={`transition-all duration-1000 transform ${visibleSections['hero-right'] ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}>
               <div className="relative group">
                 <div className="absolute inset-0 bg-gradient-to-br from-[#FF9F45]/20 to-yellow-400/20 rounded-3xl blur-3xl group-hover:blur-2xl transition-all" />
                 <div className="relative bg-gradient-to-br from-[#FF9F45] to-yellow-400 rounded-3xl p-1">
@@ -276,35 +275,40 @@ export default function UpsellPage() {
           {/* SAVINGS CARD */}
           <div data-animate id="savings-card" className={`relative transition-all duration-1000 transform ${visibleSections['savings-card'] ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}>
             <div className="absolute inset-0 bg-gradient-to-r from-green-400/20 to-emerald-400/20 rounded-3xl blur-2xl animate-pulse" />
-            <div className="relative bg-gradient-to-br from-green-50 to-emerald-50 border-3 border-green-500 rounded-3xl p-8 md:p-12 text-center space-y-4">
-              <Heart className="w-16 h-16 mx-auto text-green-600 animate-bounce" />
-              <p className="text-xl font-black text-green-700">VOCÊ VAI ECONOMIZAR</p>
-              <p className="text-6xl md:text-7xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">R$ 6,00</p>
-              <p className="text-lg font-black text-green-600">+ R$ 378 em bônus grátis = R$ 384 total em valor!</p>
+            <div className="relative bg-gradient-to-br from-[#FFF5E6] to-orange-50 border-3 border-[#FF9F45] rounded-3xl p-8 md:p-12 text-center space-y-6">
+              <p className="text-xl font-black text-[#FF9F45]">💰 VOCÊ ECONOMIZA</p>
+              <p className="text-5xl md:text-6xl font-black text-green-600">R$ 6,00</p>
+              <div className="bg-white rounded-2xl p-4 border-2 border-[#FFD9B3]">
+                <p className="text-sm font-semibold text-[#666] mb-1">Mais 4 Bônus Exclusivos:</p>
+                <p className="text-2xl font-black text-[#FF9F45]">R$ 378 GRÁTIS</p>
+              </div>
+              <p className="text-[#666] font-semibold">De R$ 17,99 por apenas R$ 11,99 + Bônus</p>
             </div>
           </div>
 
           {/* BUTTONS */}
-          <div className="space-y-4">
+          <div className="space-y-4 flex flex-col items-center w-full">
             {/* ACCEPT */}
             <button
               onClick={handleAcceptUpsell}
-              className="w-full group"
+              className="w-full max-w-lg group"
               data-testid="button-accept-upsell"
             >
-              <div className="bg-gradient-to-r from-[#FF9F45] to-yellow-400 text-white font-black rounded-full py-5 md:py-6 px-6 text-center text-lg md:text-xl shadow-xl hover:shadow-2xl transition-all hover:scale-105 active:scale-95 transform">
-                SIM! QUERO O PREMIUM COM 30% DE DESCONTO
+              <div className="bg-gradient-to-r from-[#FF9F45] to-yellow-400 text-white font-black rounded-full py-6 md:py-7 px-8 text-center shadow-xl hover:shadow-2xl transition-all hover:scale-105 active:scale-95 transform">
+                <p className="text-lg md:text-xl leading-tight">SIM! QUERO O PREMIUM</p>
+                <p className="text-3xl md:text-4xl font-black mt-1">R$ 11,99</p>
               </div>
             </button>
 
             {/* REJECT */}
             <button
               onClick={handleRejectUpsell}
-              className="w-full group"
+              className="w-full max-w-lg group"
               data-testid="button-reject-upsell"
             >
-              <div className="bg-gradient-to-r from-gray-400 to-gray-500 text-white font-black rounded-full py-5 md:py-6 px-6 text-center text-lg md:text-xl shadow-xl hover:shadow-2xl transition-all hover:scale-105 active:scale-95 transform">
-                Quero apenas o Básico de R$ 7,99 e perder os bônus
+              <div className="bg-gradient-to-r from-gray-400 to-gray-500 text-white font-black rounded-full py-5 md:py-6 px-8 text-center shadow-lg hover:shadow-xl transition-all hover:scale-105 active:scale-95 transform">
+                <p className="text-base md:text-lg">Quero o Básico</p>
+                <p className="text-sm md:text-base font-semibold mt-1">Apenas R$ 7,99</p>
               </div>
             </button>
           </div>

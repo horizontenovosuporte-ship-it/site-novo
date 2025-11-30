@@ -112,7 +112,7 @@ export default function LandingPage() {
     if (plan === 'Plano Básico') {
       setLocation('/upsell');
     } else {
-      window.open('https://go.invictuspay.app.br/h74rluqxrx', '_blank');
+      window.location.href = 'https://go.invictuspay.app.br/h74rluqxrx';
     }
   };
 
@@ -311,9 +311,8 @@ export default function LandingPage() {
 
               <ul className="space-y-4 mb-10 text-left">
                 <li className="flex items-center gap-3 text-[#333333]"><span className="text-[#333333] text-xl">✓</span> 20 banhos de descarrego</li>
-                <li className="flex items-center gap-3 text-[#333333]"><span className="text-[#333333] text-xl">✓</span> Acesso por 30 dias</li>
                 <li className="flex items-center gap-3 text-[#333333]"><span className="text-[#333333] text-xl">✓</span> Formato PDF</li>
-                <li className="flex items-center gap-3 text-[#333333]"><span className="text-[#333333] text-xl">✓</span> Suporte por email</li>
+                <li className="flex items-center gap-3 text-[#333333]"><span className="text-[#333333] text-xl">✓</span> Acesso vitalício</li>
               </ul>
 
               <button onClick={() => handleCheckout('Plano Básico')} className="w-full py-4 bg-gray-600 text-white font-black text-lg rounded-full hover:bg-gray-700 hover:shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 mb-6 cursor-pointer" data-testid="button-plan-basic">
