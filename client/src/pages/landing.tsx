@@ -8,7 +8,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import heroImage from "@assets/Design_sem_nome_9_1764440988721.png";
+import heroImage from "@assets/generated_images/vertical_book_cover_método_da_purificação_total.png";
 import bonus1Image from "@assets/1_1764443110192.png";
 import bonus2Image from "@assets/2_1764443110193.png";
 import bonus3Image from "@assets/3_1764443110193.png";
@@ -16,6 +16,7 @@ import bonus4Image from "@assets/4_1764443110193.png";
 import client1Image from "@assets/generated_images/brazilian_woman_client_portrait_1.png";
 import client2Image from "@assets/generated_images/brazilian_man_client_portrait_2.png";
 import client3Image from "@assets/generated_images/mature_brazilian_woman_client_portrait.png";
+import authorImage from "@assets/Design_sem_nome_8_1764619642114.png";
 
 export default function LandingPage() {
   const { toast } = useToast();
@@ -168,40 +169,40 @@ export default function LandingPage() {
         <div className="max-w-2xl mx-auto space-y-6">
           
           {/* IMAGEM */}
-          <div data-animate id="hero-image" className={`transition-all duration-1000 ${visibleSections['hero-image'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
-            <img src={heroImage} alt="50 Banhos" className="w-full h-auto rounded-2xl shadow-lg hover:shadow-xl transition-all animate-float-up" />
+          <div data-animate id="hero-image" className={`transition-all duration-1000 flex justify-center ${visibleSections['hero-image'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
+            <img src={heroImage} alt="Método da Purificação Total - Limpe sua energia" className="w-40 h-auto md:w-56 rounded-2xl shadow-lg hover:shadow-xl transition-all animate-float-up" />
           </div>
 
           {/* TÍTULO PRINCIPAL */}
           <div data-animate id="hero-text" className={`text-center transition-all duration-1000 ${visibleSections['hero-text'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
             <h1 className="text-5xl md:text-6xl font-black text-[#FF9F45] mb-3">
-              50 Banhos de Descarrego Pesado
+              Se sua energia está pesada, nada flui e você vive cansado…
             </h1>
-            <p className="text-lg md:text-xl font-bold text-[#333333]">
-              Liberte-se de energias negativas em 7 dias
+            <p className="text-lg md:text-xl font-bold text-[#333333] mb-2">
+              Isso NÃO é normal. E você pode limpar tudo em 7 dias.
+            </p>
+            <p className="text-sm md:text-base font-semibold text-[#666]">
+              Método espiritual simples, rápido e poderoso — sem ingredientes caros, sem crença obrigatória, sem rituais complexos.
             </p>
           </div>
 
           {/* COPY AGRESSIVA - 3 PONTOS */}
           <div className="space-y-4">
-            <div className="text-center">
-              <p className="text-base md:text-lg font-black text-[#FF9F45] mb-2">
-                Cansado de carregar mau-olhado, inveja e bloqueios?
-              </p>
-              <p className="text-sm md:text-base font-semibold text-[#666]">
-                Você merece estar leve, protegido e vibrando alto.
-              </p>
-            </div>
-
             <div className="grid grid-cols-1 gap-3">
               <div className="text-center">
-                <p className="font-black text-[#333333]">✨ Limpeza espiritual profunda</p>
+                <p className="font-black text-[#333333]">✨ Limpeza profunda de energias negativas</p>
               </div>
               <div className="text-center">
-                <p className="font-black text-[#333333]">🛡️ Proteção energética completa</p>
+                <p className="font-black text-[#333333]">🛡️ Proteção espiritual de longo prazo</p>
               </div>
               <div className="text-center">
-                <p className="font-black text-[#333333]">⚡ Elevação de vibração</p>
+                <p className="font-black text-[#333333]">⚡ Vibração mais leve e clara</p>
+              </div>
+              <div className="text-center">
+                <p className="font-black text-[#333333]">❤️ Paz interior em poucos dias</p>
+              </div>
+              <div className="text-center">
+                <p className="font-black text-[#333333]">✓ Método testado e aprovado</p>
               </div>
             </div>
           </div>
@@ -212,13 +213,12 @@ export default function LandingPage() {
             className="w-full py-6 md:py-7 bg-gradient-to-r from-[#FF9F45] to-yellow-400 text-white font-black text-lg md:text-xl rounded-full shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
             data-testid="button-hero-cta"
           >
-            LIBERTA-SE AGORA
+            👉 QUERO LIMPAR MINHA ENERGIA AGORA
           </button>
 
           {/* GARANTIA E URGÊNCIA */}
           <div className="text-center space-y-2">
-            <p className="font-bold text-red-600 text-sm">⏱️ Oferta acaba hoje - vagas limitadas</p>
-            <p className="font-bold text-green-700 text-sm">✓ Garantia de 7 dias - devolução 100%</p>
+            <p className="font-bold text-green-700 text-sm">✔ Acesso imediato • ✔ 100% seguro • ✔ Garantia de 7 dias</p>
           </div>
         </div>
       </section>
@@ -226,16 +226,16 @@ export default function LandingPage() {
       {/* BENEFÍCIOS - VISUAL */}
       <section className="py-20 px-4 bg-[#FFF5E6]">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-black text-center mb-16 text-[#333333]">O Que Você Vai Receber</h2>
+          <h2 className="text-4xl md:text-5xl font-black text-center mb-16 text-[#333333]">Você está vivendo essas situações? Então sua energia está sobrecarregada.</h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {[
-              { icon: Bird, title: 'Paz Interior', desc: 'Energia leve e calma' },
-              { icon: Shield, title: 'Proteção', desc: 'Contra energias negativas' },
-              { icon: Sparkles, title: 'Limpeza', desc: 'Descarrego profundo' },
-              { icon: Flame, title: 'Transformação', desc: 'Vida renovada' },
-              { icon: Heart, title: 'Equilíbrio', desc: 'Harmonia espiritual' },
-              { icon: Sun, title: 'Elevação', desc: 'Vibração elevada' },
+              { icon: Bird, title: 'Cansado mesmo dormindo bem', desc: '' },
+              { icon: Shield, title: 'Mente confusa e pesada', desc: '' },
+              { icon: Sparkles, title: 'Tudo trava, nada anda', desc: '' },
+              { icon: Flame, title: 'Inveja, olho gordo, clima estranho', desc: '' },
+              { icon: Heart, title: 'Pessoas que sugam energia', desc: '' },
+              { icon: Sun, title: 'Casa carregada, aperto', desc: '' },
             ].map((item, idx) => {
               const Icon = item.icon;
               return (
@@ -248,8 +248,7 @@ export default function LandingPage() {
                   }`}
                 >
                   <Icon size={40} className="text-[#FF9F45] mx-auto mb-4" />
-                  <h3 className="font-black text-xl mb-2 text-[#333333]">{item.title}</h3>
-                  <p className="text-[#333333]">{item.desc}</p>
+                  <h3 className="font-black text-lg mb-2 text-[#333333]">{item.title}</h3>
                 </div>
               );
             })}
@@ -260,14 +259,14 @@ export default function LandingPage() {
       {/* BÔNUS */}
       <section className="py-20 px-4">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-black text-center mb-16 text-[#333333]">Bônus Exclusivos</h2>
+          <h2 className="text-4xl md:text-5xl font-black text-center mb-16 text-[#333333]">Bônus Exclusivos — Disponíveis Apenas Hoje</h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { image: bonus1Image, title: 'Guia de Proteção Contra Inveja', price: 47 },
-              { image: bonus2Image, title: '20 Rituais Energéticos de Prosperidade', price: 37 },
-              { image: bonus3Image, title: 'Grupo VIP Espiritualidade', price: 97 },
-              { image: bonus4Image, title: '30 Rituais Energéticos Atração de Pessoas', price: 197 },
+              { image: bonus1Image, title: 'Mapa de Proteção 24h Contra Inveja', price: 67 },
+              { image: bonus2Image, title: '20 Rituais Energéticos de Prosperidade Instantânea', price: 57 },
+              { image: bonus3Image, title: 'Guia "Escudo Espiritual"', price: 97 },
+              { image: bonus4Image, title: 'Acesso ao Grupo VIP Espiritual', price: 97 },
             ].map((bonus, idx) => (
               <div key={idx} data-animate id={`bonus-${idx}`} className={`transition-all duration-700 ${visibleSections[`bonus-${idx}`] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
                 <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 hover:-translate-y-2 cursor-pointer">
@@ -282,8 +281,8 @@ export default function LandingPage() {
           </div>
 
           <div className="text-center mt-16 space-y-4">
-            <p className="text-xl md:text-2xl font-black text-[#333333]">Total de Bônus: <span className="line-through text-[#FFB366]">R$ 378</span></p>
-            <p className="text-4xl md:text-5xl font-black text-[#FF9F45]">HOJE: GRÁTIS</p>
+            <p className="text-xl md:text-2xl font-black text-[#333333]">Valor total dos bônus: <span className="line-through text-[#FFB366]">R$ 318</span></p>
+            <p className="text-4xl md:text-5xl font-black text-[#FF9F45]">➡ HOJE: R$ 0</p>
           </div>
         </div>
       </section>
@@ -302,21 +301,19 @@ export default function LandingPage() {
             {/* BÁSICO */}
             <div data-animate id="plan-basic" className={`p-8 bg-white rounded-3xl border border-gray-200 transition-all duration-300 text-center hover:shadow-lg hover:-translate-y-2 cursor-pointer ${visibleSections['plan-basic'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
               <h3 className="text-3xl font-black mb-3 text-[#333333]">Plano Básico</h3>
-              <p className="text-[#666] mb-8 font-semibold">Para começar sua limpeza espiritual</p>
               
               <div className="space-y-2 mb-10">
-                <p className="text-gray-400 line-through text-lg">R$ 49,99</p>
-                <p className="text-4xl md:text-6xl font-black text-[#FF9F45]">R$ 7,99</p>
+                <p className="text-4xl md:text-6xl font-black text-[#FF9F45]">R$ 14,90</p>
               </div>
 
               <ul className="space-y-4 mb-10 text-left">
-                <li className="flex items-center gap-3 text-[#333333]"><span className="text-[#333333] text-xl">✓</span> 20 banhos de descarrego</li>
-                <li className="flex items-center gap-3 text-[#333333]"><span className="text-[#333333] text-xl">✓</span> Formato PDF</li>
+                <li className="flex items-center gap-3 text-[#333333]"><span className="text-[#333333] text-xl">✓</span> Módulos 1 e 2</li>
                 <li className="flex items-center gap-3 text-[#333333]"><span className="text-[#333333] text-xl">✓</span> Acesso vitalício</li>
+                <li className="flex items-center gap-3 text-[#333333]"><span className="text-[#333333] text-xl">✓</span> Material em PDF</li>
               </ul>
 
               <button onClick={() => handleCheckout('Plano Básico')} className="w-full py-4 bg-gray-600 text-white font-black text-lg rounded-full hover:bg-gray-700 hover:shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 mb-6 cursor-pointer" data-testid="button-plan-basic">
-                QUERO O BÁSICO
+                👉 QUERO O BÁSICO
               </button>
 
               <p className="text-center text-gray-500 text-xs italic">
@@ -326,34 +323,25 @@ export default function LandingPage() {
 
             {/* PREMIUM */}
             <div data-animate id="plan-premium" className={`p-8 bg-[#EBEBEB] rounded-3xl border-4 border-[#FF9F45] transition-all duration-300 relative text-center hover:shadow-2xl hover:-translate-y-2 hover:scale-105 cursor-pointer ${visibleSections['plan-premium'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
-              <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 md:left-auto md:right-8 md:transform-none bg-red-400 text-white px-4 md:px-6 py-2 rounded-full font-black text-xs md:text-sm">MAIS VENDIDO</div>
+              <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 md:left-auto md:right-8 md:transform-none bg-red-400 text-white px-4 md:px-6 py-2 rounded-full font-black text-xs md:text-sm">⭐ MAIS VENDIDO</div>
               
               <h3 className="text-3xl font-black mb-3 text-[#333333] mt-4">Plano Premium</h3>
-              <p className="text-[#666] mb-8 font-semibold">Para quem quer proteção espiritual completa</p>
               
               <div className="space-y-2 mb-10">
-                <p className="text-gray-400 line-through text-lg">R$ 97,00</p>
-                <p className="text-4xl md:text-6xl font-black bg-gradient-to-r from-[#FF9F45] to-yellow-400 bg-clip-text text-transparent">R$ 17,99</p>
+                <p className="text-4xl md:text-6xl font-black bg-gradient-to-r from-[#FF9F45] to-yellow-400 bg-clip-text text-transparent">R$ 24,90</p>
               </div>
 
               <ul className="space-y-4 mb-10 text-left">
-                <li className="flex items-center gap-3 text-[#333333]"><span className="text-[#333333] text-xl">✓</span> Os 50 banhos completos</li>
+                <li className="flex items-center gap-3 text-[#333333]"><span className="text-[#333333] text-xl">✓</span> Módulos 1, 2, 3, 4, 5, 6 e 7</li>
+                <li className="flex items-center gap-3 text-[#333333]"><span className="text-[#333333] text-xl">✓</span> Todos os 34 banhos</li>
+                <li className="flex items-center gap-3 text-[#333333]"><span className="text-[#333333] text-xl">✓</span> Todos os bônus (R$ 318 grátis)</li>
                 <li className="flex items-center gap-3 text-[#333333]"><span className="text-[#333333] text-xl">✓</span> Acesso vitalício</li>
-                <li className="flex items-center gap-3 text-[#333333]"><span className="text-[#333333] text-xl">✓</span> Atualizações mensais</li>
-                <li className="flex items-center gap-3 text-[#333333]"><span className="text-[#333333] text-xl">✓</span> Arquivos editáveis: PDF, DOCX</li>
-                <li className="flex items-center gap-3 text-[#333333]"><span className="text-[#333333] text-xl">✓</span> Ebook extra "15 rituais para atrair amizades boas e afastar as ruins"</li>
-                <li className="flex items-center gap-3 text-[#333333]"><span className="text-[#333333] text-xl">✓</span> Suporte prioritário</li>
+                <li className="flex items-center gap-3 text-[#333333]"><span className="text-[#333333] text-xl">✓</span> Suporte por email</li>
+                <li className="flex items-center gap-3 text-[#333333]"><span className="text-[#333333] text-xl">✓</span> PDF + DOCX</li>
               </ul>
 
-              <div className="bg-[#EBEBEB] p-6 mb-10 space-y-3">
-                <p className="text-sm text-[#333333]"><Gift size={18} className="inline text-[#FF9F45] mr-2" /> BÔNUS #1: Guia de Proteção Contra Inveja</p>
-                <p className="text-sm text-[#333333]"><Gift size={18} className="inline text-[#FF9F45] mr-2" /> BÔNUS #2: 20 Rituais Energéticos para Prosperidade</p>
-                <p className="text-sm text-[#333333]"><Gift size={18} className="inline text-[#FF9F45] mr-2" /> BÔNUS #3: Grupo VIP de Espiritualidade</p>
-                <p className="text-sm text-[#333333]"><Gift size={18} className="inline text-[#FF9F45] mr-2" /> BÔNUS #4: 30 Rituais Energéticos para Atrair Pessoas</p>
-              </div>
-
               <button id="button-plan-premium" onClick={() => handleCheckout('Plano Premium')} className="w-full py-4 bg-gradient-to-r from-[#FF9F45] to-yellow-400 text-white font-black text-lg rounded-full hover:shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer" data-testid="button-plan-premium">
-                GARANTIR O PREMIUM
+                🔥 QUERO O PREMIUM COMPLETO
               </button>
             </div>
           </div>
@@ -364,29 +352,28 @@ export default function LandingPage() {
       <section className="py-20 px-4 bg-white">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-black text-[#333333] mb-4">O Que Nossos Clientes Dizem</h2>
-            <p className="text-lg text-[#666] font-semibold">Histórias reais de transformação espiritual</p>
+            <h2 className="text-4xl md:text-5xl font-black text-[#333333] mb-4">Histórias reais de pessoas que transformaram sua energia</h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
                 image: client1Image,
-                name: 'Maria Silva',
+                name: 'Maria S.',
                 profession: 'Terapeuta Holística',
-                testimonial: '"Os banhos são de uma potência excepcional. Minha energia mudou completamente desde que comecei a usar. Recomendo demais!"'
+                testimonial: '"Minha energia mudou em 48 horas. Senti leveza e paz como há meses não sentia."'
               },
               {
                 image: client2Image,
-                name: 'João Santos',
-                profession: 'Praticante de Umbanda',
-                testimonial: '"Finalmente encontrei receitas que seguem as tradições ancestrais. A eficácia é impressionante e os bônus valem muito a pena."'
+                name: 'João S.',
+                profession: 'Umbandista',
+                testimonial: '"Receitas fortes, ancestrais e verdadeiras. Funcionam, ponto."'
               },
               {
                 image: client3Image,
-                name: 'Ana Costa',
+                name: 'Ana C.',
                 profession: 'Consultora Espiritual',
-                testimonial: '"Investimento que se pagou na primeira semana. A variedade de banhos permite atender qualquer necessidade. Excelente!"'
+                testimonial: '"Sigo usando até hoje. É prático, simples e extremamente poderoso."'
               }
             ].map((client, idx) => (
               <div key={idx} data-animate id={`testimonial-${idx}`} className={`bg-white rounded-2xl p-8 border border-[#E5E5E5] text-center transition-all duration-300 hover:shadow-xl hover:border-[#FF9F45]/50 hover:-translate-y-2 cursor-pointer ${visibleSections[`testimonial-${idx}`] ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
@@ -398,6 +385,41 @@ export default function LandingPage() {
                 <p className="text-[#555] italic leading-relaxed">{client.testimonial}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* SEÇÃO AUTORA - MÃE CELESTE */}
+      <section className="py-20 px-4 bg-white">
+        <div className="max-w-2xl mx-auto text-center">
+          <div data-animate id="author-section" className={`transition-all duration-1000 ${visibleSections['author-section'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
+            {/* FOTO */}
+            <img 
+              src={authorImage} 
+              alt="Mãe Celeste" 
+              className="w-56 h-56 md:w-64 md:h-64 aspect-square object-cover rounded-2xl shadow-2xl border-6 border-[#FF9F45] mx-auto mb-8"
+            />
+
+            {/* NOME E TÍTULO */}
+            <h2 className="text-3xl md:text-4xl font-black text-[#333333] mb-2">
+              Mãe Celeste
+            </h2>
+            <p className="text-lg font-black text-[#FF9F45] mb-6">Guardiã Espiritual</p>
+
+            {/* BIO CONCISA */}
+            <p className="text-base text-[#333333] leading-relaxed mb-6 font-semibold">
+              12 anos dedicados à energia espiritual e cura profunda. Autoridade reconhecida em limpeza energética, com métodos testados que transformaram a vida de milhares de pessoas.
+            </p>
+
+            {/* QUOTE */}
+            <p className="text-base text-[#333333] italic font-semibold mb-6 border-l-4 border-[#FF9F45] pl-4">
+              "Energia limpa é liberdade. Liberdade é poder. E você merece estar poderoso."
+            </p>
+
+            {/* CREDIBILIDADE */}
+            <p className="text-sm text-[#666]">
+              Cada um dos 34 banhos carrega sabedoria ancestral, testes reais e resultados comprovados. Você está aprendendo com a melhor.
+            </p>
           </div>
         </div>
       </section>
@@ -465,7 +487,9 @@ export default function LandingPage() {
                 Qual a diferença entre o plano Básico e Premium?
               </AccordionTrigger>
               <AccordionContent className="text-[#555] leading-relaxed pb-4">
-                O Plano Básico inclui 20 banhos com acesso por 30 dias. O Plano Premium inclui os 50 banhos completos, acesso vitalício, atualizações mensais, arquivos editáveis e 4 bônus exclusivos no valor de R$ 378. Premium é mais completo e mais em conta!
+                <strong className="text-[#333333]">Básico (R$ 14,90):</strong> Módulos 1-2 com 2 tipos de banhos de descarrego. Acesso por 30 dias. Sem bônus. <br/><br/>
+                <strong className="text-[#333333]">Premium (R$ 24,90):</strong> Todos os 34 banhos em 7 módulos completos + atualizações mensais + arquivos PDF e DOCX + acesso vitalício + 4 bônus exclusivos (R$ 318 de valor) + suporte por email. <br/><br/>
+                <span className="text-[#FF9F45] font-black">O Premium é a escolha inteligente — você paga pouco mais e recebe tudo!</span>
               </AccordionContent>
             </AccordionItem>
 
@@ -527,7 +551,7 @@ export default function LandingPage() {
 
       {/* FOOTER */}
       <footer className="py-8 px-4 border-t-2 border-[#FFD9B3] text-center text-white text-sm" style={{ backgroundColor: '#34383B' }}>
-        <p>50 Banhos de Descarrego Pesado. Todos os direitos reservados. © 2025</p>
+        <p>Método da Purificação Total • Mãe Celeste © 2025 • Todos os direitos reservados</p>
       </footer>
     </div>
   );
